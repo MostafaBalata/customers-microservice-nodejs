@@ -1,14 +1,17 @@
 const customersMocked = require('../fixtures/customers.json');
 
+const singleCustomerMocked = (id) => customersMocked.find((obj) => obj.customerID == id);
+
 const mockDbCollection = {
-  find: function() {
+  find: () => {
     return {
       toArray: (cb) => cb(null, customersMocked)
     };
-  }
+  },
+  findOne: (obj, projection, cb) => cb(undefined, singleCustomerMocked(obj.customerID))
 };
 const mockedDb = {
   collection: (name) => mockDbCollection
 }
 
-module.exports = Object.assign({}, mockedDb);
+module.exports = { mockedDb, singleCustomerMocked };

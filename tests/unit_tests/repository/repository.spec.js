@@ -6,7 +6,8 @@ chai.use(chaiAsPromised);
 
 const Repository = require('../../../src/repository/repository').Repository;
 const customersMocked = require('../../fixtures/customers.json');
-const mockedDb = require('../mongo_mocked');
+const mockedDb = require('../mongo_mocked').mockedDb;
+const singleCustomerMocked = require('../mongo_mocked').singleCustomerMocked;
 
 describe('Test customers repository', () => {
   let repository = null;
@@ -17,4 +18,14 @@ describe('Test customers repository', () => {
   it('Should return all customers', () => {
     return expect(repository.getAllCustomers()).to.eventually.deep.equal(customersMocked);
   });
+
+  it('Should return one customer', () => {
+    const expectedResult = singleCustomerMocked(1);
+    return expect(repository.getCustomerById(1)).to.eventually.deep.equal(expectedResult);
+  });
+
+  it('Should return undefined, give none exist customer ', () => {
+    return expect(repository.getCustomerById(10)).to.eventually.equal(undefined);
+  });
+
 })
