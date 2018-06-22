@@ -5,6 +5,7 @@ export class Repository {
   constructor(db) {
     this.db = db;
     this.collection = db.collection("customers");
+    this.collection.ensureIndex({ "customerID": 1 }, { unique: true })
   }
 
   getAllCustomers() {
@@ -42,7 +43,7 @@ export class Repository {
         }
         resolve(doc);
       };
-      this.collection.insert(data, {}, callback);
+      this.collection.insertOne(data, callback);
     });
   }
 

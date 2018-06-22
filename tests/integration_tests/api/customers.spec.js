@@ -16,12 +16,13 @@ const cleanCollection = clean((db, done) => {
 const createCollection = ready((db, done) => {
   db.collection('customers').insertMany(customersMocked, done);
 });
+const closeDB = ready((db, done) => {
+  db.close();
+  done()
+});
 
 describe('GET /customers', () => {
   const api = request(serverSettings.url + ":" + serverSettings.port)
-    // before(ready((db, done) => {
-    //   let mongo = require('mocha-mongo')('mongodb://localhost/customers_tests');
-    // }))
 
   afterEach(cleanCollection);
   beforeEach(createCollection);
@@ -39,14 +40,11 @@ describe('GET /customers', () => {
   });
 });
 
-describe('GET /customers:id', () => {
+describe('/customers:id', () => {
   const api = request(serverSettings.url + ":" + serverSettings.port)
   afterEach(cleanCollection);
   beforeEach(createCollection);
-  after(ready((db, done) => {
-    db.close();
-    done()
-  }))
+  after(closeDB);
   it('Should success, test exist customer with id 1', (done) => {
     api.get('/customers/1')
       .set('Accept', 'application/json')
@@ -66,12 +64,53 @@ describe('GET /customers:id', () => {
       .send({ "birthday": "1996-10-13" })
       .set('Accept', 'application/json')
       .expect('Content-Type', /json/)
-      .expect(200)
-      .then(response => {
-        expect(response.body.nModified).to.be.equal(1)
-        done();
-      }).catch((err) => {
-        done(err)
-      });
+      .expect(200, done)
   });
+
+  it('Should fail, update not exist customer', (done) => {
+    api.post('/customers/10')
+      .send({ "birthday": "1996-10-13" })
+      .set('Accept', 'application/json')
+      .expect('Content-Type', /json/)
+      .expect(404, done)
+  });
+
+  it('Should success, add new customer', (done) => {
+    const customerObj = {
+      "customerID": 20,
+      "name": {
+        "first": "John",
+        "last": "Adam"
+      },
+      "birthday": "1991-02-21",
+      "gender": "m",
+      "lastContact": "2017-08-01T11:57:47.142Z",
+      "customerLifetimeValue": 0
+    };
+
+    api.put('/customers')
+      .send(customerObj)
+      .set('Accept', 'application/json')
+      .expect('Content-Type', /json/)
+      .expect(200, done)
+  });
+
+  it('Should fail, add already exists customer', (done) => {
+    const customerObj = {
+      "customerID": 3,
+      "name": {
+        "first": "Christian",
+        "last": "Cox"
+      },
+      "birthday": "1991-02-21",
+      "gender": "m",
+      "lastContact": "2017-08-01T11:57:47.142Z",
+      "customerLifetimeValue": 0
+    };
+
+    api.put('/customers')
+      .send(customerObj)
+      .expect(400, done)
+  });
+
 });

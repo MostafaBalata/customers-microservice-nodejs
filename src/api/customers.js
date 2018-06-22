@@ -25,7 +25,7 @@ export const api = (app, options) => {
 
     repository.updateCustomer(req.params.id, data).then(customer => {
       const response = { code: status.NOT_FOUND, message: `not found customer with id ${req.params.id}` };
-      if (customer) {
+      if (customer.result.nModified == 1) {
         res.status(status.OK).json(customer);
       } else {
         res.status(status.NOT_FOUND).json(response);
@@ -33,5 +33,20 @@ export const api = (app, options) => {
     }).catch(next);
   });
 
+  app.put("/customers", (req, res, next) => {
+    const data = req.body;
+    const response = { code: status.BAD_REQUEST, message: `Duplicated user` };
+
+    repository.addCustomer(data).then(customer => {
+      if (customer.result.n == 1) {
+        res.status(status.OK).json(customer);
+      } else {
+        res.status(status.BAD_REQUEST).json(response);
+      }
+    }).catch((err) => {
+      res.status(status.BAD_REQUEST).json(response);
+      next()
+    });
+  });
 
 };
