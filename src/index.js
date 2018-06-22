@@ -35,5 +35,5 @@ mediator.on("db.ready", (db) => {
 
 });
 
-dbConnect(dbSettings, mediator);
+dbConnect(dbSettings[process.env['NODE_ENV']], mediator);
 mediator.emit("boot.ready");

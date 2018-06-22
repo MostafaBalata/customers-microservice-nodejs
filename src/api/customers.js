@@ -12,7 +12,26 @@ export const api = (app, options) => {
 
   app.get("/customers/:id", (req, res, next) => {
     repository.getCustomerById(req.params.id).then(customer => {
-      res.status(status.OK).json(customer);
+      const response = { code: status.NOT_FOUND, message: `not found customer with id ${req.params.id}` };
+      if (customer)
+        res.status(status.OK).json(customer);
+      else
+        res.status(status.NOT_FOUND).json(response);
     }).catch(next);
   });
+
+  app.post("/customers/:id", (req, res, next) => {
+    const data = req.body;
+
+    repository.updateCustomer(req.params.id, data).then(customer => {
+      const response = { code: status.NOT_FOUND, message: `not found customer with id ${req.params.id}` };
+      if (customer) {
+        res.status(status.OK).json(customer);
+      } else {
+        res.status(status.NOT_FOUND).json(response);
+      }
+    }).catch(next);
+  });
+
+
 };

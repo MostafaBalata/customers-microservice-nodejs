@@ -12,9 +12,11 @@
     "rimraf": "^2.6.2"
   },
   "scripts": {
-    "test": "./node_modules/mocha/bin/mocha --compilers js:babel-core/register ./tests/**/*.spec.js",
+    "unit-test": "NODE_ENV=testing ./node_modules/mocha/bin/mocha --compilers js:babel-core/register ./tests/unit_tests/**/*.spec.js",
+    "integration-test": "NODE_ENV=testing ./node_modules/mocha/bin/mocha --compilers js:babel-core/register ./tests/integration_tests/**/*.spec.js",
     "build": "rimraf dist/ && babel ./src --out-dir dist/ --ignore ./node_modules,./.babelrc,./package.json,./npm-debug.log --copy-files",
-    "start": "yarn build && node dist/index.js",
+    "serve-testing": "yarn build && NODE_ENV=testing  node dist/index.js",
+    "start": "yarn build && NODE_ENV=production  node dist/index.js",
     "lint": "./node_modules/eslint/bin/eslint.js src",
     "lint:fix": "./node_modules/eslint/bin/eslint.js src --fix"
   },
@@ -29,6 +31,7 @@
     "eslint-config-airbnb": "^16.1.0",
     "mocha": "^5.2.0",
     "mocha-mongo": "^1.0.0",
-    "sinon": "^6.0.0"
+    "sinon": "^6.0.0",
+    "supertest": "^3.1.0"
   }
 }

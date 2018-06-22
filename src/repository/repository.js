@@ -8,31 +8,31 @@ export class Repository {
   }
 
   getAllCustomers() {
-    // Find some documents
-    return new Promise((resolve, reject) => {
-      const callback = (err, docs) => {
-        if (err) {
-          reject(new Error(`An error occurred fetching a customers, err: ${err}`));
-        }
-        resolve(docs);
-      };
+      // Find some documents
+      return new Promise((resolve, reject) => {
+        const callback = (err, docs) => {
+          if (err) {
+            reject(new Error(`An error occurred fetching a customers, err: ${err}`));
+          }
+          resolve(docs);
+        };
 
-      this.collection.find({}).toArray(callback);
-    });
-  } // end function
+        this.collection.find({}).toArray(callback);
+      });
+    } // end function
 
   getCustomerById(id) {
-    return new Promise((resolve, reject) => {
-      const callback = (err, doc) => {
-        if (err) {
-          reject(new Error(Error(`An error occurred fetching a customer with id: ${id}, err: ${err}`)));
-        }
-        resolve(doc);
-      };
-      this.collection.findOne({ "customerID": parseInt(id) }, {}, callback);
-    });
+      return new Promise((resolve, reject) => {
+        const callback = (err, doc) => {
+          if (err) {
+            reject(new Error(Error(`An error occurred fetching a customer with id: ${id}, err: ${err}`)));
+          }
+          resolve(doc);
+        };
+        this.collection.findOne({ "customerID": parseInt(id) }, {}, callback);
+      });
 
-  } // end function
+    } // end function
 
   addCustomer(data) {
     return new Promise((resolve, reject) => {
@@ -46,7 +46,7 @@ export class Repository {
     });
   }
 
-  updateCustomer(data) {
+  updateCustomer(id, data) {
     return new Promise((resolve, reject) => {
       const callback = (err, doc) => {
         if (err) {
@@ -54,7 +54,8 @@ export class Repository {
         }
         resolve(doc);
       };
-      this.collection.update({ "customerID": data.customerID }, { "$set": data }, {}, callback);
+      const query = { "$set": data };
+      this.collection.updateOne({ "customerID": parseInt(id) }, query, callback);
     });
   }
 

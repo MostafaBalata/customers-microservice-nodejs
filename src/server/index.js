@@ -15,6 +15,7 @@ export const start = (options) => {
     const app = express();
     app.use(morgan("dev"));
     app.use(helmet());
+    app.use(express.json());
 
     app.use((err, req, res, next) => {
       reject(new Error("Something went wrong!, err:" + err));
