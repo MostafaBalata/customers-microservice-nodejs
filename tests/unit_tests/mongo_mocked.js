@@ -8,7 +8,8 @@ const mockDbCollection = {
       toArray: (cb) => cb(null, customersMocked)
     };
   },
-  findOne: (obj, projection, cb) => cb(undefined, singleCustomerMocked(obj.customerID))
+  findOne: (obj, projection, cb) => cb(undefined, singleCustomerMocked(obj.customerID)),
+  ensureIndex: (obj, options) => true
 };
 const mockedDb = {
   collection: (name) => mockDbCollection

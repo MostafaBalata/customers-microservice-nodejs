@@ -1,13 +1,12 @@
 export const dbSettings = {
   production: {
     db: process.env.DB || "customers",
-    server: process.env.DB_SERVER || "localhost:27017",
+    server: process.env.DB_SERVER || "mongo:27017",
   },
   testing: {
     db: "customers_tests",
-    server: "localhost:27017",
+    server: process.env.TEST_DB_SERVER || "mongo:27017",
   }
-
 };
 
 export const serverSettings = {

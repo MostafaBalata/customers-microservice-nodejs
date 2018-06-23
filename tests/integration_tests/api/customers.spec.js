@@ -67,6 +67,13 @@ describe('/customers:id', () => {
       .expect(200, done)
   });
 
+  it('Should success, delete customer', (done) => {
+    api.delete('/customers/1')
+      .set('Accept', 'application/json')
+      .expect('Content-Type', /json/)
+      .expect(200, done)
+  });
+
   it('Should fail, update not exist customer', (done) => {
     api.post('/customers/10')
       .send({ "birthday": "1996-10-13" })
@@ -77,7 +84,6 @@ describe('/customers:id', () => {
 
   it('Should success, add new customer', (done) => {
     const customerObj = {
-      "customerID": 20,
       "name": {
         "first": "John",
         "last": "Adam"
@@ -94,23 +100,4 @@ describe('/customers:id', () => {
       .expect('Content-Type', /json/)
       .expect(200, done)
   });
-
-  it('Should fail, add already exists customer', (done) => {
-    const customerObj = {
-      "customerID": 3,
-      "name": {
-        "first": "Christian",
-        "last": "Cox"
-      },
-      "birthday": "1991-02-21",
-      "gender": "m",
-      "lastContact": "2017-08-01T11:57:47.142Z",
-      "customerLifetimeValue": 0
-    };
-
-    api.put('/customers')
-      .send(customerObj)
-      .expect(400, done)
-  });
-
 });

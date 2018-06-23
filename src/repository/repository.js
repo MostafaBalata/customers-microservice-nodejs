@@ -8,56 +8,32 @@ export class Repository {
     this.collection.ensureIndex({ "customerID": 1 }, { unique: true })
   }
 
-  getAllCustomers() {
-      // Find some documents
-      return new Promise((resolve, reject) => {
-        const callback = (err, docs) => {
-          if (err) {
-            reject(new Error(`An error occurred fetching a customers, err: ${err}`));
-          }
-          resolve(docs);
-        };
-
-        this.collection.find({}).toArray(callback);
-      });
-    } // end function
-
-  getCustomerById(id) {
-      return new Promise((resolve, reject) => {
-        const callback = (err, doc) => {
-          if (err) {
-            reject(new Error(Error(`An error occurred fetching a customer with id: ${id}, err: ${err}`)));
-          }
-          resolve(doc);
-        };
-        this.collection.findOne({ "customerID": parseInt(id) }, {}, callback);
-      });
-
-    } // end function
-
-  addCustomer(data) {
-    return new Promise((resolve, reject) => {
-      const callback = (err, doc) => {
-        if (err) {
-          reject(new Error(Error(err)));
-        }
-        resolve(doc);
-      };
-      this.collection.insertOne(data, callback);
-    });
+  async getAllCustomers() {
+    return this.collection.find({}).toArray();
   }
 
-  updateCustomer(id, data) {
-    return new Promise((resolve, reject) => {
-      const callback = (err, doc) => {
-        if (err) {
-          reject(new Error(Error(err)));
-        }
-        resolve(doc);
-      };
-      const query = { "$set": data };
-      this.collection.updateOne({ "customerID": parseInt(id) }, query, callback);
-    });
+  async getCustomerById(id) {
+    return this.collection.findOne({ "customerID": parseInt(id) }, {});
+  }
+
+  async getLastCustomerAdded() {
+    return await this.collection.find({}).sort({ customerID: -1 }).limit(1).toArray();
+  }
+
+  async addCustomer(data) {
+    const customers = await this.getLastCustomerAdded()
+    data['customerID'] = customers.length >= 1 ? customers[0]['customerID'] + 1 : 1;
+    return this.collection.insertOne(data)
+  }
+
+  async deleteCustomer(id) {
+    return this.collection.deleteOne({ customerID: parseInt(id) });
+  }
+
+  async updateCustomer(id, data) {
+    delete data['_id'];
+    const query = { "$set": data };
+    return this.collection.updateOne({ "customerID": parseInt(id) }, query);
   }
 
   close() {

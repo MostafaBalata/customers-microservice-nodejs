@@ -17,7 +17,8 @@ process.on("uncaughtRejection", (err) => {
 
 mediator.on("db.error", (err) => {
   // eslint-disable-next-line no-console
-  console.log(err);
+  console.error("Database error", err);
+  process.exit(1);
 });
 
 mediator.on("db.ready", (db) => {
