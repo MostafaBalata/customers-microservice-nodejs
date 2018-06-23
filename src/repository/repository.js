@@ -1,11 +1,14 @@
 "use strict";
 
+/**
+ * Repository, is a class that have database management functions. 
+ */
 export class Repository {
 
   constructor(db) {
     this.db = db;
     this.collection = db.collection("customers");
-    this.collection.ensureIndex({ "customerID": 1 }, { unique: true })
+    this.collection.ensureIndex({ "customerID": 1 }, { unique: true });
   }
 
   async getAllCustomers() {
@@ -21,9 +24,9 @@ export class Repository {
   }
 
   async addCustomer(data) {
-    const customers = await this.getLastCustomerAdded()
-    data['customerID'] = customers.length >= 1 ? customers[0]['customerID'] + 1 : 1;
-    return this.collection.insertOne(data)
+    const customers = await this.getLastCustomerAdded();
+    data["customerID"] = customers.length >= 1 ? customers[0]["customerID"] + 1 : 1;
+    return this.collection.insertOne(data);
   }
 
   async deleteCustomer(id) {
@@ -31,7 +34,7 @@ export class Repository {
   }
 
   async updateCustomer(id, data) {
-    delete data['_id'];
+    delete data["_id"];
     const query = { "$set": data };
     return this.collection.updateOne({ "customerID": parseInt(id) }, query);
   }

@@ -1,5 +1,10 @@
-const MongoClient = require("mongodb").MongoClient;
+import { MongoClient } from "mongodb";
 
+/**
+ * Connect to database
+ * @param {*} options 
+ * @param {*} mediator 
+ */
 export const dbConnect = (options, mediator) => {
   mediator.once("boot.ready", () => {
     MongoClient.connect(`mongodb://${options.server}/`, { native_parser: true }, (err, client) => {

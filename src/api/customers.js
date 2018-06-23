@@ -1,15 +1,20 @@
 "use strict";
-const status = require("http-status");
+import status from "http-status";
 
+/**
+ * Module contains the customers endpoints
+ * @param {*} app 
+ * @param {*} options 
+ */
 export const api = (app, options) => {
   const { repository } = options;
 
   app.get("/customers", async(req, res, next) => {
     try {
-      const customers = await repository.getAllCustomers()
+      const customers = await repository.getAllCustomers();
       res.status(status.OK).json(customers);
     } catch (err) {
-      next()
+      next();
     }
   });
 
@@ -20,11 +25,11 @@ export const api = (app, options) => {
       if (customer) {
         res.status(status.OK).json(customer);
       } else {
-        throw new Error("Customer not found")
+        throw new Error("Customer not found");
       }
     } catch (err) {
       res.status(status.NOT_FOUND).json(response);
-      next()
+      next();
     }
   });
 
@@ -40,7 +45,7 @@ export const api = (app, options) => {
       }
     } catch (err) {
       res.status(status.NOT_FOUND).json(response);
-      next()
+      next();
     }
   });
 
@@ -55,21 +60,20 @@ export const api = (app, options) => {
       }
     } catch (err) {
       res.status(status.NOT_FOUND).json(response);
-      next()
+      next();
     }
   });
 
 
   app.put("/customers", async(req, res, next) => {
     const data = req.body;
-    const response = { code: status.BAD_REQUEST, message: `Duplicated user` };
+    const response = { code: status.BAD_REQUEST, message: "Duplicated user" };
     try {
       const customer = await repository.addCustomer(data);
       res.status(status.OK).json(customer);
     } catch (err) {
-      console.error(err)
       res.status(status.BAD_REQUEST).json(response);
-      next()
+      next();
     }
   });
 

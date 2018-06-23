@@ -21,20 +21,20 @@ mediator.on("db.error", (err) => {
   process.exit(1);
 });
 
-mediator.on("db.ready", (db) => {
+mediator.on("db.ready", async(db) => {
   const repository = new Repository(db);
-  start({
+  const app = await start({
     port: serverSettings.port,
     repository
-  }).then(app => {
-    // eslint-disable-next-line no-console
-    console.log(`Server started successfully, running on port: ${serverSettings.port}.`);
-    app.on("close", () => {
-      repository.disconnect();
-    });
+  });
+
+  // eslint-disable-next-line no-console
+  console.log(`Server started successfully, running on port: ${serverSettings.port}.`);
+  app.on("close", () => {
+    repository.disconnect();
   });
 
 });
 
-dbConnect(dbSettings[process.env['NODE_ENV']], mediator);
+dbConnect(dbSettings[process.env["NODE_ENV"]], mediator);
 mediator.emit("boot.ready");
