@@ -5,10 +5,10 @@ const singleCustomerMocked = (id) => customersMocked.find((obj) => obj.customerI
 const mockDbCollection = {
   find: () => {
     return {
-      toArray: (cb) => cb(null, customersMocked)
+      toArray: () => customersMocked
     };
   },
-  findOne: (obj, projection, cb) => cb(undefined, singleCustomerMocked(obj.customerID)),
+  findOne: (obj, projection) => singleCustomerMocked(obj.customerID),
   ensureIndex: (obj, options) => true
 };
 const mockedDb = {
